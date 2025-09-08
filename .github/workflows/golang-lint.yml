@@ -1,0 +1,41 @@
+name: Golang Linter
+
+on:
+  workflow_call: {}
+
+jobs:
+  lint:
+    name: Lint and Format Check
+    runs-on: ubuntu-latest
+    
+    steps:      
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version-file: "go.mod"
+        cache: true
+
+    - name: Install golangci-lint
+      uses: golangci/golangci-lint-action@v8
+      with:
+        version: latest
+        
+    - name: Run golangci-lint
+      run: golangci-lint run --timeout=5m
+        
+    - name: Check gofmt
+      run: |
+        if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then \
+          echo "Code is not formatted. Please run 'gofmt -s -w .'"; \
+          gofmt -s -l .; \
+          exit 1; \
+        fi
+        echo "Code formatting is correct"
+        
+    - name: Check go mod
+      run: |
+        echo "Checking go.mod and go.sum..."
+        git diff --quiet go.mod go.sum || (echo "go.mod or go.sum has uncommitted changes. Please commit them first." && exit 1)
+        go mod tidy
+        git diff --quiet go.mod go.sum || (echo "go.mod or go.sum is not tidy. Please run 'go mod tidy' and commit changes." && git diff go.mod go.sum && exit 1)
+        echo "Go modules are tidy"
