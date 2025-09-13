@@ -1,11 +1,11 @@
-name: GoSec
+name: Golang Security Scan
 
 on:
   workflow_call: {}
 
 jobs:
   gosec:
-    name: GoSec Scan
+    name: Security Scan
     runs-on: ubuntu-latest
     permissions:
       security-events: write
