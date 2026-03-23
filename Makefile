@@ -8,7 +8,7 @@ test-unit:
 	@go test -v ./...
 
 # Run all code quality checks
-quality: fmt-check go-mod-tidy lint
+quality: fmt-check go-mod-tidy lint security
 	@echo "All code quality checks passed!"
 
 # Run linting with golangci-lint
@@ -45,6 +45,16 @@ go-mod-tidy:
 	fi
 	@echo "go.mod and go.sum are tidy"
 
+# Run security checks with gosec
+security: gosec-install
+	gosec -fmt sarif -out results.sarif ./...
+
+# Install gosec if not already installed
+gosec-install:
+	@if ! command -v gosec >/dev/null 2>&1; then \
+		echo "Installing gosec..."; \
+		go install github.com/securego/gosec/v2/cmd/gosec@latest; \
+	fi
 
 # Show help
 help:
