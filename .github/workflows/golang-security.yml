@@ -11,9 +11,9 @@ jobs:
       security-events: write
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v6.0.2
       
-    - uses: actions/setup-go@v6
+    - uses: actions/setup-go@v6.4.0
       with:
         go-version-file: "go.mod"
         cache: true
@@ -24,7 +24,7 @@ jobs:
         args: '-fmt sarif -out results.sarif ./...'
         
     - name: Upload SARIF file
-      uses: github/codeql-action/upload-sarif@v4
+      uses: github/codeql-action/upload-sarif@v4.35.2
       if: always()
       with:
         sarif_file: results.sarif
