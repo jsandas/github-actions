@@ -1,7 +1,28 @@
 name: Golang Linter
 
 on:
-  workflow_call: {}
+  workflow_call:
+    inputs:
+      golangci_lint_version:
+        description: "Version of golangci-lint to install"
+        required: false
+        type: string
+        default: "latest"
+      go_version:
+        description: "Go version to install. Set this or go_version_file."
+        required: false
+        type: string
+        default: ""
+      go_version_file:
+        description: "Path to a Go version file. Set this or go_version."
+        required: false
+        type: string
+        default: "go.mod"
+      go_cache:
+        description: "Enable Go dependency caching"
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   linter:
@@ -15,13 +36,14 @@ jobs:
       
     - uses: actions/setup-go@v6.4.0
       with:
-        go-version-file: "go.mod"
-        cache: true
+        go-version: ${{ inputs.go_version != '' && inputs.go_version || '' }}
+        go-version-file: ${{ inputs.go_version == '' && inputs.go_version_file || '' }}
+        cache: ${{ inputs.go_cache }}
 
     - uses: golangci/golangci-lint-action@v9.2.0
       with:
-        version: latest
-        
+        version: ${{ inputs.golangci_lint_version }}
+
     - name: Run golangci-lint
       run: golangci-lint run --timeout=5m
         
