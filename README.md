@@ -6,6 +6,8 @@
 
 This repository includes a reusable workflow for running Go linting. It accepts optional inputs for the golangci-lint version and the Go setup configuration.
 
+When both `go_version` and `go_version_file` are supplied, the explicit `go_version` takes precedence. In general, provide only one of them to avoid ambiguity.
+
 Use the default Go version file (defaults to `go.mod`) and default lint version (`latest`):
 
 ```yaml
