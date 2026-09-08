@@ -36,7 +36,7 @@ jobs:
         cache: ${{ inputs.go_cache }}
         
     - name: Run gosec security scanner
-      uses: securego/gosec@master
+      uses: securego/gosec@v2.29.0
       with:
         args: '-fmt sarif -out results.sarif ./...'
         
