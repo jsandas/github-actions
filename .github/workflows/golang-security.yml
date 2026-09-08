@@ -27,7 +27,7 @@ jobs:
       security-events: write
 
     steps:
-    - uses: actions/checkout@v6.0.2
+    - uses: actions/checkout@v7.0.1
 
     - name: Validate Go version inputs
       shell: bash
@@ -37,13 +37,13 @@ jobs:
           exit 1
         fi
 
-    - uses: actions/setup-go@v6.4.0
+    - uses: actions/setup-go@v7.0.0
       if: ${{ inputs.go_version != '' }}
       with:
         go-version: ${{ inputs.go_version }}
         cache: ${{ inputs.go_cache }}
 
-    - uses: actions/setup-go@v6.4.0
+    - uses: actions/setup-go@v7.0.0
       if: ${{ inputs.go_version == '' }}
       with:
         go-version-file: ${{ inputs.go_version_file != '' && inputs.go_version_file || 'go.mod' }}
@@ -55,7 +55,7 @@ jobs:
         args: '-fmt sarif -out results.sarif ./...'
         
     - name: Upload SARIF file
-      uses: github/codeql-action/upload-sarif@v4.35.2
+      uses: github/codeql-action/upload-sarif@v4.37.9
       if: always()
       with:
         sarif_file: results.sarif
