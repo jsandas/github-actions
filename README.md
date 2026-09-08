@@ -6,7 +6,7 @@
 
 This repository includes a reusable workflow for running Go linting. It accepts optional inputs for the golangci-lint version and the Go setup configuration.
 
-When both `go_version` and `go_version_file` are supplied, the explicit `go_version` takes precedence. In general, provide only one of them to avoid ambiguity.
+`go_version` and `go_version_file` are mutually exclusive. If both are supplied, the workflow fails with an error instead of silently choosing one. When neither is supplied, the workflow defaults to `go.mod`.
 
 Use the default Go version file (defaults to `go.mod`) and default lint version (`latest`):
 
@@ -41,7 +41,7 @@ jobs:
 
 ### Go security workflow
 
-The Go security workflow supports the same Go setup inputs. When both `go_version` and `go_version_file` are supplied, the explicit `go_version` takes precedence.
+The Go security workflow supports the same Go setup inputs. `go_version` and `go_version_file` are mutually exclusive, and the workflow fails with an error if both are supplied. When neither is supplied, it defaults to `go.mod`.
 
 ```yaml
 jobs:
