@@ -1,7 +1,23 @@
 name: Golang Security Scan
 
 on:
-  workflow_call: {}
+  workflow_call:
+    inputs:
+      go_version:
+        description: "Go version to install. Mutually exclusive with go_version_file."
+        required: false
+        type: string
+        default: ""
+      go_version_file:
+        description: "Path to a Go version file. Defaults to go.mod when not supplied. Mutually exclusive with go_version."
+        required: false
+        type: string
+        default: ""
+      go_cache:
+        description: "Enable Go dependency caching"
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   gosec:
@@ -12,14 +28,29 @@ jobs:
 
     steps:
     - uses: actions/checkout@v7.0.1
-      
+
+    - name: Validate Go version inputs
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.go_version }}" ] && [ -n "${{ inputs.go_version_file }}" ]; then
+          echo "::error::Specify only one of go_version or go_version_file."
+          exit 1
+        fi
+
     - uses: actions/setup-go@v7.0.0
+      if: ${{ inputs.go_version != '' }}
       with:
-        go-version-file: "go.mod"
-        cache: true
-        
+        go-version: ${{ inputs.go_version }}
+        cache: ${{ inputs.go_cache }}
+
+    - uses: actions/setup-go@v7.0.0
+      if: ${{ inputs.go_version == '' }}
+      with:
+        go-version-file: ${{ inputs.go_version_file != '' && inputs.go_version_file || 'go.mod' }}
+        cache: ${{ inputs.go_cache }}
+
     - name: Run gosec security scanner
-      uses: securego/gosec@master
+      uses: securego/gosec@v2.29.0
       with:
         args: '-fmt sarif -out results.sarif ./...'
         
