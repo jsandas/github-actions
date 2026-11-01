@@ -14,12 +14,12 @@ jobs:
     - uses: actions/checkout@v7.0.1
 
     - name: Run gosec security scanner
-      uses: securego/gosec@v2.29.0
+      uses: securego/gosec@v2.30.0
       with:
         args: '-fmt sarif -out results.sarif ./...'
         
     - name: Upload SARIF file
-      uses: github/codeql-action/upload-sarif@v4.38.2
+      uses: github/codeql-action/upload-sarif@v4.39.1
       if: always()
       with:
         sarif_file: results.sarif
